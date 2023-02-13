@@ -1,0 +1,1726 @@
+2022-11-14 15:01:00,022 - mmseg - INFO - Multi-processing start method is `None`
+2022-11-14 15:01:00,023 - mmseg - INFO - OpenCV num_threads is `40
+2022-11-14 15:01:00,023 - mmseg - INFO - OMP num threads is 1
+2022-11-14 15:01:00,113 - mmseg - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.13 (default, Oct 18 2022, 18:57:03) [GCC 11.2.0]
+CUDA available: True
+GPU 0,1,2,3,4,5,6,7: NVIDIA GeForce RTX 3090
+CUDA_HOME: /usr
+NVCC: Cuda compilation tools, release 10.1, V10.1.24
+GCC: gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+PyTorch: 1.12.1
+PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.6.0 (Git Hash 52b5f107dd9cf10910aaa19cb47f3abf9b349815)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.3.2  (built against CUDA 11.5)
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.3.2, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -fabi-version=11 -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.12.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=OFF, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+TorchVision: 0.13.1
+OpenCV: 4.6.0
+MMCV: 1.6.2
+MMCV Compiler: GCC 9.3
+MMCV CUDA Compiler: 11.3
+MMSegmentation: 0.29.0+
+------------------------------------------------------------
+
+2022-11-14 15:01:00,113 - mmseg - INFO - Distributed training: True
+2022-11-14 15:01:00,359 - mmseg - INFO - Config:
+norm_cfg = dict(type='SyncBN', requires_grad=True)
+backbone_norm_cfg = dict(type='LN', requires_grad=True)
+model = dict(
+    type='EncoderDecoder',
+    pretrained=None,
+    backbone=dict(
+        type='SwinTransformer',
+        pretrain_img_size=192,
+        embed_dims=48,
+        patch_size=4,
+        window_size=6,
+        mlp_ratio=4,
+        depths=[2, 2, 6, 2],
+        num_heads=[4, 8, 16, 32],
+        strides=(4, 2, 2, 2),
+        out_indices=(0, 1, 2, 3),
+        qkv_bias=True,
+        qk_scale=None,
+        patch_norm=True,
+        drop_rate=0.0,
+        attn_drop_rate=0.0,
+        drop_path_rate=0.3,
+        use_abs_pos_embed=False,
+        act_cfg=dict(type='GELU'),
+        norm_cfg=dict(type='LN', requires_grad=True),
+        init_cfg=dict(
+            type='Pretrained',
+            checkpoint='/home/data1/yxd/mmsegmentation/simmim/new.pth')),
+    decode_head=dict(
+        type='UPerHead',
+        in_channels=[48, 96, 192, 384],
+        in_index=[0, 1, 2, 3],
+        pool_scales=(1, 2, 3, 6),
+        channels=512,
+        dropout_ratio=0.1,
+        num_classes=2,
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
+        align_corners=False,
+        loss_decode=dict(type='DiceLoss', loss_weight=1.0)),
+    auxiliary_head=dict(
+        type='FCNHead',
+        in_channels=192,
+        in_index=2,
+        channels=256,
+        num_convs=1,
+        concat_input=False,
+        dropout_ratio=0.1,
+        num_classes=2,
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
+        align_corners=False,
+        loss_decode=dict(type='DiceLoss', loss_weight=0.4)),
+    train_cfg=dict(),
+    test_cfg=dict(mode='whole'))
+dataset_type = 'ChaseDB1Dataset'
+data_root = 'data/CHASE_DB1'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+crop_size = (48, 48)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', reduce_zero_label=False),
+    dict(type='Resize', img_scale=(192, 192), ratio_range=(0.5, 2.0)),
+    dict(type='RandomCrop', crop_size=(48, 48), cat_max_ratio=0.75),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PhotoMetricDistortion'),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size=(48, 48), pad_val=0, seg_pad_val=255),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(192, 192),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=200,
+    workers_per_gpu=4,
+    train=dict(
+        type='ChaseDB1Dataset',
+        data_root='data/CHASE_DB1',
+        img_dir='images/training',
+        ann_dir='annotations/training',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', reduce_zero_label=False),
+            dict(type='Resize', img_scale=(192, 192), ratio_range=(0.5, 2.0)),
+            dict(type='RandomCrop', crop_size=(48, 48), cat_max_ratio=0.75),
+            dict(type='RandomFlip', prob=0.5),
+            dict(type='PhotoMetricDistortion'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size=(48, 48), pad_val=0, seg_pad_val=255),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+        ]),
+    val=dict(
+        type='ChaseDB1Dataset',
+        data_root='data/CHASE_DB1',
+        img_dir='images/validation',
+        ann_dir='annotations/validation',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(192, 192),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]),
+    test=dict(
+        type='ChaseDB1Dataset',
+        data_root='data/CHASE_DB1',
+        img_dir='images/validation',
+        ann_dir='annotations/validation',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(192, 192),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+log_config = dict(
+    interval=50, hooks=[dict(type='TextLoggerHook', by_epoch=False)])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+cudnn_benchmark = True
+optimizer = dict(
+    type='AdamW',
+    lr=6e-05,
+    betas=(0.9, 0.999),
+    weight_decay=0.01,
+    paramwise_cfg=dict(
+        custom_keys=dict(
+            absolute_pos_embed=dict(decay_mult=0.0),
+            relative_position_bias_table=dict(decay_mult=0.0),
+            norm=dict(decay_mult=0.0))))
+optimizer_config = dict()
+lr_config = dict(
+    policy='poly',
+    warmup='linear',
+    warmup_iters=1500,
+    warmup_ratio=1e-06,
+    power=1.0,
+    min_lr=0.0,
+    by_epoch=False)
+runner = dict(type='IterBasedRunner', max_iters=2160)
+checkpoint_config = dict(by_epoch=False, interval=200)
+evaluation = dict(interval=700, metric='mIoU')
+checkpoint_file = '/home/data1/yxd/mmsegmentation/simmim/new.pth'
+work_dir = './work_dirs/pupil'
+gpu_ids = range(0, 8)
+auto_resume = False
+
+2022-11-14 15:01:03,315 - mmseg - INFO - Set random seed to 1912064538, deterministic: False
+2022-11-14 15:01:03,852 - mmseg - INFO - load checkpoint from local path: /home/data1/yxd/mmsegmentation/simmim/new.pth
+2022-11-14 15:01:04,494 - mmseg - WARNING - Error in loading stages.0.blocks.0.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,497 - mmseg - WARNING - Error in loading stages.0.blocks.1.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,499 - mmseg - WARNING - Error in loading stages.1.blocks.0.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,502 - mmseg - WARNING - Error in loading stages.1.blocks.1.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,504 - mmseg - WARNING - Error in loading stages.2.blocks.0.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,505 - mmseg - WARNING - Error in loading stages.2.blocks.1.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,507 - mmseg - WARNING - Error in loading stages.2.blocks.2.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,508 - mmseg - WARNING - Error in loading stages.2.blocks.3.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,510 - mmseg - WARNING - Error in loading stages.2.blocks.4.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,511 - mmseg - WARNING - Error in loading stages.2.blocks.5.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,512 - mmseg - WARNING - Error in loading stages.3.blocks.0.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,514 - mmseg - WARNING - Error in loading stages.3.blocks.1.attn.w_msa.relative_position_bias_table, pass
+2022-11-14 15:01:04,526 - mmseg - WARNING - The model and loaded state dict do not match exactly
+
+size mismatch for patch_embed.norm.weight: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for patch_embed.norm.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.0.norm1.weight: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.0.norm1.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.0.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 3]) from checkpoint, the shape in current model is torch.Size([121, 4]).
+size mismatch for stages.0.blocks.0.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.0.blocks.0.attn.w_msa.qkv.weight: copying a param with shape torch.Size([288, 96]) from checkpoint, the shape in current model is torch.Size([144, 48]).
+size mismatch for stages.0.blocks.0.attn.w_msa.qkv.bias: copying a param with shape torch.Size([288]) from checkpoint, the shape in current model is torch.Size([144]).
+size mismatch for stages.0.blocks.0.attn.w_msa.proj.weight: copying a param with shape torch.Size([96, 96]) from checkpoint, the shape in current model is torch.Size([48, 48]).
+size mismatch for stages.0.blocks.0.attn.w_msa.proj.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.0.norm2.weight: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.0.norm2.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.0.ffn.layers.0.0.weight: copying a param with shape torch.Size([384, 96]) from checkpoint, the shape in current model is torch.Size([192, 48]).
+size mismatch for stages.0.blocks.0.ffn.layers.0.0.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.0.blocks.0.ffn.layers.1.weight: copying a param with shape torch.Size([96, 384]) from checkpoint, the shape in current model is torch.Size([48, 192]).
+size mismatch for stages.0.blocks.0.ffn.layers.1.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.1.norm1.weight: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.1.norm1.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.1.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 3]) from checkpoint, the shape in current model is torch.Size([121, 4]).
+size mismatch for stages.0.blocks.1.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.0.blocks.1.attn.w_msa.qkv.weight: copying a param with shape torch.Size([288, 96]) from checkpoint, the shape in current model is torch.Size([144, 48]).
+size mismatch for stages.0.blocks.1.attn.w_msa.qkv.bias: copying a param with shape torch.Size([288]) from checkpoint, the shape in current model is torch.Size([144]).
+size mismatch for stages.0.blocks.1.attn.w_msa.proj.weight: copying a param with shape torch.Size([96, 96]) from checkpoint, the shape in current model is torch.Size([48, 48]).
+size mismatch for stages.0.blocks.1.attn.w_msa.proj.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.1.norm2.weight: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.1.norm2.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.blocks.1.ffn.layers.0.0.weight: copying a param with shape torch.Size([384, 96]) from checkpoint, the shape in current model is torch.Size([192, 48]).
+size mismatch for stages.0.blocks.1.ffn.layers.0.0.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.0.blocks.1.ffn.layers.1.weight: copying a param with shape torch.Size([96, 384]) from checkpoint, the shape in current model is torch.Size([48, 192]).
+size mismatch for stages.0.blocks.1.ffn.layers.1.bias: copying a param with shape torch.Size([96]) from checkpoint, the shape in current model is torch.Size([48]).
+size mismatch for stages.0.downsample.norm.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.0.downsample.norm.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.0.downsample.reduction.weight: copying a param with shape torch.Size([192, 384]) from checkpoint, the shape in current model is torch.Size([96, 192]).
+size mismatch for stages.1.blocks.0.norm1.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.0.norm1.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.0.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 6]) from checkpoint, the shape in current model is torch.Size([121, 8]).
+size mismatch for stages.1.blocks.0.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.1.blocks.0.attn.w_msa.qkv.weight: copying a param with shape torch.Size([576, 192]) from checkpoint, the shape in current model is torch.Size([288, 96]).
+size mismatch for stages.1.blocks.0.attn.w_msa.qkv.bias: copying a param with shape torch.Size([576]) from checkpoint, the shape in current model is torch.Size([288]).
+size mismatch for stages.1.blocks.0.attn.w_msa.proj.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([96, 96]).
+size mismatch for stages.1.blocks.0.attn.w_msa.proj.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.0.norm2.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.0.norm2.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.0.ffn.layers.0.0.weight: copying a param with shape torch.Size([768, 192]) from checkpoint, the shape in current model is torch.Size([384, 96]).
+size mismatch for stages.1.blocks.0.ffn.layers.0.0.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.1.blocks.0.ffn.layers.1.weight: copying a param with shape torch.Size([192, 768]) from checkpoint, the shape in current model is torch.Size([96, 384]).
+size mismatch for stages.1.blocks.0.ffn.layers.1.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.1.norm1.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.1.norm1.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.1.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 6]) from checkpoint, the shape in current model is torch.Size([121, 8]).
+size mismatch for stages.1.blocks.1.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.1.blocks.1.attn.w_msa.qkv.weight: copying a param with shape torch.Size([576, 192]) from checkpoint, the shape in current model is torch.Size([288, 96]).
+size mismatch for stages.1.blocks.1.attn.w_msa.qkv.bias: copying a param with shape torch.Size([576]) from checkpoint, the shape in current model is torch.Size([288]).
+size mismatch for stages.1.blocks.1.attn.w_msa.proj.weight: copying a param with shape torch.Size([192, 192]) from checkpoint, the shape in current model is torch.Size([96, 96]).
+size mismatch for stages.1.blocks.1.attn.w_msa.proj.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.1.norm2.weight: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.1.norm2.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.blocks.1.ffn.layers.0.0.weight: copying a param with shape torch.Size([768, 192]) from checkpoint, the shape in current model is torch.Size([384, 96]).
+size mismatch for stages.1.blocks.1.ffn.layers.0.0.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.1.blocks.1.ffn.layers.1.weight: copying a param with shape torch.Size([192, 768]) from checkpoint, the shape in current model is torch.Size([96, 384]).
+size mismatch for stages.1.blocks.1.ffn.layers.1.bias: copying a param with shape torch.Size([192]) from checkpoint, the shape in current model is torch.Size([96]).
+size mismatch for stages.1.downsample.norm.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.1.downsample.norm.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.1.downsample.reduction.weight: copying a param with shape torch.Size([384, 768]) from checkpoint, the shape in current model is torch.Size([192, 384]).
+size mismatch for stages.2.blocks.0.norm1.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.0.norm1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.0.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 12]) from checkpoint, the shape in current model is torch.Size([121, 16]).
+size mismatch for stages.2.blocks.0.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.2.blocks.0.attn.w_msa.qkv.weight: copying a param with shape torch.Size([1152, 384]) from checkpoint, the shape in current model is torch.Size([576, 192]).
+size mismatch for stages.2.blocks.0.attn.w_msa.qkv.bias: copying a param with shape torch.Size([1152]) from checkpoint, the shape in current model is torch.Size([576]).
+size mismatch for stages.2.blocks.0.attn.w_msa.proj.weight: copying a param with shape torch.Size([384, 384]) from checkpoint, the shape in current model is torch.Size([192, 192]).
+size mismatch for stages.2.blocks.0.attn.w_msa.proj.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.0.norm2.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.0.norm2.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.0.ffn.layers.0.0.weight: copying a param with shape torch.Size([1536, 384]) from checkpoint, the shape in current model is torch.Size([768, 192]).
+size mismatch for stages.2.blocks.0.ffn.layers.0.0.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.blocks.0.ffn.layers.1.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([192, 768]).
+size mismatch for stages.2.blocks.0.ffn.layers.1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.1.norm1.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.1.norm1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.1.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 12]) from checkpoint, the shape in current model is torch.Size([121, 16]).
+size mismatch for stages.2.blocks.1.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.2.blocks.1.attn.w_msa.qkv.weight: copying a param with shape torch.Size([1152, 384]) from checkpoint, the shape in current model is torch.Size([576, 192]).
+size mismatch for stages.2.blocks.1.attn.w_msa.qkv.bias: copying a param with shape torch.Size([1152]) from checkpoint, the shape in current model is torch.Size([576]).
+size mismatch for stages.2.blocks.1.attn.w_msa.proj.weight: copying a param with shape torch.Size([384, 384]) from checkpoint, the shape in current model is torch.Size([192, 192]).
+size mismatch for stages.2.blocks.1.attn.w_msa.proj.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.1.norm2.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.1.norm2.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.1.ffn.layers.0.0.weight: copying a param with shape torch.Size([1536, 384]) from checkpoint, the shape in current model is torch.Size([768, 192]).
+size mismatch for stages.2.blocks.1.ffn.layers.0.0.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.blocks.1.ffn.layers.1.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([192, 768]).
+size mismatch for stages.2.blocks.1.ffn.layers.1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.2.norm1.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.2.norm1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.2.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 12]) from checkpoint, the shape in current model is torch.Size([121, 16]).
+size mismatch for stages.2.blocks.2.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.2.blocks.2.attn.w_msa.qkv.weight: copying a param with shape torch.Size([1152, 384]) from checkpoint, the shape in current model is torch.Size([576, 192]).
+size mismatch for stages.2.blocks.2.attn.w_msa.qkv.bias: copying a param with shape torch.Size([1152]) from checkpoint, the shape in current model is torch.Size([576]).
+size mismatch for stages.2.blocks.2.attn.w_msa.proj.weight: copying a param with shape torch.Size([384, 384]) from checkpoint, the shape in current model is torch.Size([192, 192]).
+size mismatch for stages.2.blocks.2.attn.w_msa.proj.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.2.norm2.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.2.norm2.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.2.ffn.layers.0.0.weight: copying a param with shape torch.Size([1536, 384]) from checkpoint, the shape in current model is torch.Size([768, 192]).
+size mismatch for stages.2.blocks.2.ffn.layers.0.0.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.blocks.2.ffn.layers.1.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([192, 768]).
+size mismatch for stages.2.blocks.2.ffn.layers.1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.3.norm1.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.3.norm1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.3.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 12]) from checkpoint, the shape in current model is torch.Size([121, 16]).
+size mismatch for stages.2.blocks.3.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.2.blocks.3.attn.w_msa.qkv.weight: copying a param with shape torch.Size([1152, 384]) from checkpoint, the shape in current model is torch.Size([576, 192]).
+size mismatch for stages.2.blocks.3.attn.w_msa.qkv.bias: copying a param with shape torch.Size([1152]) from checkpoint, the shape in current model is torch.Size([576]).
+size mismatch for stages.2.blocks.3.attn.w_msa.proj.weight: copying a param with shape torch.Size([384, 384]) from checkpoint, the shape in current model is torch.Size([192, 192]).
+size mismatch for stages.2.blocks.3.attn.w_msa.proj.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.3.norm2.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.3.norm2.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.3.ffn.layers.0.0.weight: copying a param with shape torch.Size([1536, 384]) from checkpoint, the shape in current model is torch.Size([768, 192]).
+size mismatch for stages.2.blocks.3.ffn.layers.0.0.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.blocks.3.ffn.layers.1.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([192, 768]).
+size mismatch for stages.2.blocks.3.ffn.layers.1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.4.norm1.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.4.norm1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.4.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 12]) from checkpoint, the shape in current model is torch.Size([121, 16]).
+size mismatch for stages.2.blocks.4.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.2.blocks.4.attn.w_msa.qkv.weight: copying a param with shape torch.Size([1152, 384]) from checkpoint, the shape in current model is torch.Size([576, 192]).
+size mismatch for stages.2.blocks.4.attn.w_msa.qkv.bias: copying a param with shape torch.Size([1152]) from checkpoint, the shape in current model is torch.Size([576]).
+size mismatch for stages.2.blocks.4.attn.w_msa.proj.weight: copying a param with shape torch.Size([384, 384]) from checkpoint, the shape in current model is torch.Size([192, 192]).
+size mismatch for stages.2.blocks.4.attn.w_msa.proj.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.4.norm2.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.4.norm2.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.4.ffn.layers.0.0.weight: copying a param with shape torch.Size([1536, 384]) from checkpoint, the shape in current model is torch.Size([768, 192]).
+size mismatch for stages.2.blocks.4.ffn.layers.0.0.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.blocks.4.ffn.layers.1.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([192, 768]).
+size mismatch for stages.2.blocks.4.ffn.layers.1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.5.norm1.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.5.norm1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.5.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 12]) from checkpoint, the shape in current model is torch.Size([121, 16]).
+size mismatch for stages.2.blocks.5.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.2.blocks.5.attn.w_msa.qkv.weight: copying a param with shape torch.Size([1152, 384]) from checkpoint, the shape in current model is torch.Size([576, 192]).
+size mismatch for stages.2.blocks.5.attn.w_msa.qkv.bias: copying a param with shape torch.Size([1152]) from checkpoint, the shape in current model is torch.Size([576]).
+size mismatch for stages.2.blocks.5.attn.w_msa.proj.weight: copying a param with shape torch.Size([384, 384]) from checkpoint, the shape in current model is torch.Size([192, 192]).
+size mismatch for stages.2.blocks.5.attn.w_msa.proj.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.5.norm2.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.5.norm2.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.blocks.5.ffn.layers.0.0.weight: copying a param with shape torch.Size([1536, 384]) from checkpoint, the shape in current model is torch.Size([768, 192]).
+size mismatch for stages.2.blocks.5.ffn.layers.0.0.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.blocks.5.ffn.layers.1.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([192, 768]).
+size mismatch for stages.2.blocks.5.ffn.layers.1.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+size mismatch for stages.2.downsample.norm.weight: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.downsample.norm.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+size mismatch for stages.2.downsample.reduction.weight: copying a param with shape torch.Size([768, 1536]) from checkpoint, the shape in current model is torch.Size([384, 768]).
+size mismatch for stages.3.blocks.0.norm1.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.0.norm1.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.0.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 24]) from checkpoint, the shape in current model is torch.Size([121, 32]).
+size mismatch for stages.3.blocks.0.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.3.blocks.0.attn.w_msa.qkv.weight: copying a param with shape torch.Size([2304, 768]) from checkpoint, the shape in current model is torch.Size([1152, 384]).
+size mismatch for stages.3.blocks.0.attn.w_msa.qkv.bias: copying a param with shape torch.Size([2304]) from checkpoint, the shape in current model is torch.Size([1152]).
+size mismatch for stages.3.blocks.0.attn.w_msa.proj.weight: copying a param with shape torch.Size([768, 768]) from checkpoint, the shape in current model is torch.Size([384, 384]).
+size mismatch for stages.3.blocks.0.attn.w_msa.proj.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.0.norm2.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.0.norm2.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.0.ffn.layers.0.0.weight: copying a param with shape torch.Size([3072, 768]) from checkpoint, the shape in current model is torch.Size([1536, 384]).
+size mismatch for stages.3.blocks.0.ffn.layers.0.0.bias: copying a param with shape torch.Size([3072]) from checkpoint, the shape in current model is torch.Size([1536]).
+size mismatch for stages.3.blocks.0.ffn.layers.1.weight: copying a param with shape torch.Size([768, 3072]) from checkpoint, the shape in current model is torch.Size([384, 1536]).
+size mismatch for stages.3.blocks.0.ffn.layers.1.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.1.norm1.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.1.norm1.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.1.attn.w_msa.relative_position_bias_table: copying a param with shape torch.Size([169, 24]) from checkpoint, the shape in current model is torch.Size([121, 32]).
+size mismatch for stages.3.blocks.1.attn.w_msa.relative_position_index: copying a param with shape torch.Size([49, 49]) from checkpoint, the shape in current model is torch.Size([36, 36]).
+size mismatch for stages.3.blocks.1.attn.w_msa.qkv.weight: copying a param with shape torch.Size([2304, 768]) from checkpoint, the shape in current model is torch.Size([1152, 384]).
+size mismatch for stages.3.blocks.1.attn.w_msa.qkv.bias: copying a param with shape torch.Size([2304]) from checkpoint, the shape in current model is torch.Size([1152]).
+size mismatch for stages.3.blocks.1.attn.w_msa.proj.weight: copying a param with shape torch.Size([768, 768]) from checkpoint, the shape in current model is torch.Size([384, 384]).
+size mismatch for stages.3.blocks.1.attn.w_msa.proj.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.1.norm2.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.1.norm2.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+size mismatch for stages.3.blocks.1.ffn.layers.0.0.weight: copying a param with shape torch.Size([3072, 768]) from checkpoint, the shape in current model is torch.Size([1536, 384]).
+size mismatch for stages.3.blocks.1.ffn.layers.0.0.bias: copying a param with shape torch.Size([3072]) from checkpoint, the shape in current model is torch.Size([1536]).
+size mismatch for stages.3.blocks.1.ffn.layers.1.weight: copying a param with shape torch.Size([768, 3072]) from checkpoint, the shape in current model is torch.Size([384, 1536]).
+size mismatch for stages.3.blocks.1.ffn.layers.1.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+unexpected key in source state_dict: norm.weight, norm.bias, patch_embed.projectionection.weight, patch_embed.projectionection.bias, stages.0.blocks.1.attn_mask, stages.1.blocks.1.attn_mask, stages.2.blocks.1.attn_mask, stages.2.blocks.3.attn_mask, stages.2.blocks.5.attn_mask
+
+missing keys in source state_dict: patch_embed.projection.weight, patch_embed.projection.bias, norm0.weight, norm0.bias, norm1.weight, norm1.bias, norm2.weight, norm2.bias, norm3.weight, norm3.bias
+
+2022-11-14 15:01:04,534 - mmseg - INFO - initialize UPerHead with init_cfg {'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+2022-11-14 15:01:04,714 - mmseg - INFO - initialize FCNHead with init_cfg {'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+Name of parameter - Initialization information
+
+backbone.patch_embed.projection.weight - torch.Size([48, 3, 4, 4]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.patch_embed.projection.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.patch_embed.norm.weight - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.patch_embed.norm.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.norm1.weight - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.norm1.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.attn.w_msa.relative_position_bias_table - torch.Size([121, 4]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.attn.w_msa.qkv.weight - torch.Size([144, 48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.attn.w_msa.qkv.bias - torch.Size([144]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.attn.w_msa.proj.weight - torch.Size([48, 48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.attn.w_msa.proj.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.norm2.weight - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.norm2.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.ffn.layers.0.0.weight - torch.Size([192, 48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.ffn.layers.0.0.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.ffn.layers.1.weight - torch.Size([48, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.0.ffn.layers.1.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.norm1.weight - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.norm1.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.attn.w_msa.relative_position_bias_table - torch.Size([121, 4]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.attn.w_msa.qkv.weight - torch.Size([144, 48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.attn.w_msa.qkv.bias - torch.Size([144]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.attn.w_msa.proj.weight - torch.Size([48, 48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.attn.w_msa.proj.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.norm2.weight - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.norm2.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.ffn.layers.0.0.weight - torch.Size([192, 48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.ffn.layers.0.0.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.ffn.layers.1.weight - torch.Size([48, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.blocks.1.ffn.layers.1.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.downsample.norm.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.downsample.norm.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.0.downsample.reduction.weight - torch.Size([96, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.norm1.weight - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.norm1.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.attn.w_msa.relative_position_bias_table - torch.Size([121, 8]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.attn.w_msa.qkv.weight - torch.Size([288, 96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.attn.w_msa.qkv.bias - torch.Size([288]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.attn.w_msa.proj.weight - torch.Size([96, 96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.attn.w_msa.proj.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.norm2.weight - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.norm2.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.ffn.layers.0.0.weight - torch.Size([384, 96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.ffn.layers.0.0.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.ffn.layers.1.weight - torch.Size([96, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.0.ffn.layers.1.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.norm1.weight - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.norm1.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.attn.w_msa.relative_position_bias_table - torch.Size([121, 8]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.attn.w_msa.qkv.weight - torch.Size([288, 96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.attn.w_msa.qkv.bias - torch.Size([288]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.attn.w_msa.proj.weight - torch.Size([96, 96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.attn.w_msa.proj.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.norm2.weight - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.norm2.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.ffn.layers.0.0.weight - torch.Size([384, 96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.ffn.layers.0.0.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.ffn.layers.1.weight - torch.Size([96, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.blocks.1.ffn.layers.1.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.downsample.norm.weight - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.downsample.norm.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.1.downsample.reduction.weight - torch.Size([192, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.norm1.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.norm1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.attn.w_msa.relative_position_bias_table - torch.Size([121, 16]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.attn.w_msa.qkv.weight - torch.Size([576, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.attn.w_msa.qkv.bias - torch.Size([576]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.attn.w_msa.proj.weight - torch.Size([192, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.attn.w_msa.proj.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.ffn.layers.0.0.weight - torch.Size([768, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.ffn.layers.0.0.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.ffn.layers.1.weight - torch.Size([192, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.0.ffn.layers.1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.norm1.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.norm1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.attn.w_msa.relative_position_bias_table - torch.Size([121, 16]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.attn.w_msa.qkv.weight - torch.Size([576, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.attn.w_msa.qkv.bias - torch.Size([576]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.attn.w_msa.proj.weight - torch.Size([192, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.attn.w_msa.proj.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.ffn.layers.0.0.weight - torch.Size([768, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.ffn.layers.0.0.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.ffn.layers.1.weight - torch.Size([192, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.1.ffn.layers.1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.norm1.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.norm1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.attn.w_msa.relative_position_bias_table - torch.Size([121, 16]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.attn.w_msa.qkv.weight - torch.Size([576, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.attn.w_msa.qkv.bias - torch.Size([576]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.attn.w_msa.proj.weight - torch.Size([192, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.attn.w_msa.proj.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.ffn.layers.0.0.weight - torch.Size([768, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.ffn.layers.0.0.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.ffn.layers.1.weight - torch.Size([192, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.2.ffn.layers.1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.norm1.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.norm1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.attn.w_msa.relative_position_bias_table - torch.Size([121, 16]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.attn.w_msa.qkv.weight - torch.Size([576, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.attn.w_msa.qkv.bias - torch.Size([576]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.attn.w_msa.proj.weight - torch.Size([192, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.attn.w_msa.proj.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.ffn.layers.0.0.weight - torch.Size([768, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.ffn.layers.0.0.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.ffn.layers.1.weight - torch.Size([192, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.3.ffn.layers.1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.norm1.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.norm1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.attn.w_msa.relative_position_bias_table - torch.Size([121, 16]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.attn.w_msa.qkv.weight - torch.Size([576, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.attn.w_msa.qkv.bias - torch.Size([576]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.attn.w_msa.proj.weight - torch.Size([192, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.attn.w_msa.proj.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.ffn.layers.0.0.weight - torch.Size([768, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.ffn.layers.0.0.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.ffn.layers.1.weight - torch.Size([192, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.4.ffn.layers.1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.norm1.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.norm1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.attn.w_msa.relative_position_bias_table - torch.Size([121, 16]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.attn.w_msa.qkv.weight - torch.Size([576, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.attn.w_msa.qkv.bias - torch.Size([576]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.attn.w_msa.proj.weight - torch.Size([192, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.attn.w_msa.proj.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.ffn.layers.0.0.weight - torch.Size([768, 192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.ffn.layers.0.0.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.ffn.layers.1.weight - torch.Size([192, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.blocks.5.ffn.layers.1.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.downsample.norm.weight - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.downsample.norm.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.2.downsample.reduction.weight - torch.Size([384, 768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.norm1.weight - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.norm1.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.attn.w_msa.relative_position_bias_table - torch.Size([121, 32]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.attn.w_msa.qkv.weight - torch.Size([1152, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.attn.w_msa.qkv.bias - torch.Size([1152]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.attn.w_msa.proj.weight - torch.Size([384, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.attn.w_msa.proj.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.norm2.weight - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.norm2.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.ffn.layers.0.0.weight - torch.Size([1536, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.ffn.layers.0.0.bias - torch.Size([1536]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.ffn.layers.1.weight - torch.Size([384, 1536]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.0.ffn.layers.1.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.norm1.weight - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.norm1.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.attn.w_msa.relative_position_bias_table - torch.Size([121, 32]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.attn.w_msa.qkv.weight - torch.Size([1152, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.attn.w_msa.qkv.bias - torch.Size([1152]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.attn.w_msa.proj.weight - torch.Size([384, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.attn.w_msa.proj.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.norm2.weight - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.norm2.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.ffn.layers.0.0.weight - torch.Size([1536, 384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.ffn.layers.0.0.bias - torch.Size([1536]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.ffn.layers.1.weight - torch.Size([384, 1536]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.stages.3.blocks.1.ffn.layers.1.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm0.weight - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm0.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm1.weight - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm1.bias - torch.Size([96]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm2.weight - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm2.bias - torch.Size([192]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm3.weight - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.norm3.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.conv_seg.weight - torch.Size([2, 512, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+decode_head.conv_seg.bias - torch.Size([2]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+decode_head.psp_modules.0.1.conv.weight - torch.Size([512, 384, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.0.1.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.0.1.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.1.1.conv.weight - torch.Size([512, 384, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.1.1.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.1.1.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.2.1.conv.weight - torch.Size([512, 384, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.2.1.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.2.1.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.3.1.conv.weight - torch.Size([512, 384, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.3.1.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.psp_modules.3.1.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.bottleneck.conv.weight - torch.Size([512, 2432, 3, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+decode_head.bottleneck.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.bottleneck.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.0.conv.weight - torch.Size([512, 48, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.0.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.0.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.1.conv.weight - torch.Size([512, 96, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.1.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.1.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.2.conv.weight - torch.Size([512, 192, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.2.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.lateral_convs.2.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.0.conv.weight - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.0.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.0.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.1.conv.weight - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.1.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.1.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.2.conv.weight - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.2.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_convs.2.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_bottleneck.conv.weight - torch.Size([512, 2048, 3, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+decode_head.fpn_bottleneck.bn.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.fpn_bottleneck.bn.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.conv_seg.weight - torch.Size([2, 256, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+auxiliary_head.conv_seg.bias - torch.Size([2]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+auxiliary_head.convs.0.conv.weight - torch.Size([256, 192, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.convs.0.bn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.convs.0.bn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+2022-11-14 15:01:04,718 - mmseg - INFO - EncoderDecoder(
+  (backbone): SwinTransformer(
+    (patch_embed): PatchEmbed(
+      (adap_padding): AdaptivePadding()
+      (projection): Conv2d(3, 48, kernel_size=(4, 4), stride=(4, 4))
+      (norm): LayerNorm((48,), eps=1e-05, elementwise_affine=True)
+    )
+    (drop_after_pos): Dropout(p=0.0, inplace=False)
+    (stages): ModuleList(
+      (0): SwinBlockSequence(
+        (blocks): ModuleList(
+          (0): SwinBlock(
+            (norm1): LayerNorm((48,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=48, out_features=144, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=48, out_features=48, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((48,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=48, out_features=192, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=192, out_features=48, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): SwinBlock(
+            (norm1): LayerNorm((48,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=48, out_features=144, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=48, out_features=48, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((48,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=48, out_features=192, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=192, out_features=48, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (downsample): PatchMerging(
+          (adap_padding): AdaptivePadding()
+          (sampler): Unfold(kernel_size=(2, 2), dilation=(1, 1), padding=(0, 0), stride=(2, 2))
+          (norm): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+          (reduction): Linear(in_features=192, out_features=96, bias=False)
+        )
+      )
+      (1): SwinBlockSequence(
+        (blocks): ModuleList(
+          (0): SwinBlock(
+            (norm1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=96, out_features=288, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=96, out_features=96, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=96, out_features=384, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=384, out_features=96, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): SwinBlock(
+            (norm1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=96, out_features=288, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=96, out_features=96, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=96, out_features=384, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=384, out_features=96, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (downsample): PatchMerging(
+          (adap_padding): AdaptivePadding()
+          (sampler): Unfold(kernel_size=(2, 2), dilation=(1, 1), padding=(0, 0), stride=(2, 2))
+          (norm): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (reduction): Linear(in_features=384, out_features=192, bias=False)
+        )
+      )
+      (2): SwinBlockSequence(
+        (blocks): ModuleList(
+          (0): SwinBlock(
+            (norm1): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=192, out_features=576, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=192, out_features=192, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=192, out_features=768, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=768, out_features=192, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): SwinBlock(
+            (norm1): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=192, out_features=576, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=192, out_features=192, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=192, out_features=768, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=768, out_features=192, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (2): SwinBlock(
+            (norm1): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=192, out_features=576, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=192, out_features=192, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=192, out_features=768, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=768, out_features=192, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (3): SwinBlock(
+            (norm1): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=192, out_features=576, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=192, out_features=192, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=192, out_features=768, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=768, out_features=192, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (4): SwinBlock(
+            (norm1): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=192, out_features=576, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=192, out_features=192, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=192, out_features=768, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=768, out_features=192, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (5): SwinBlock(
+            (norm1): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=192, out_features=576, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=192, out_features=192, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=192, out_features=768, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=768, out_features=192, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (downsample): PatchMerging(
+          (adap_padding): AdaptivePadding()
+          (sampler): Unfold(kernel_size=(2, 2), dilation=(1, 1), padding=(0, 0), stride=(2, 2))
+          (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (reduction): Linear(in_features=768, out_features=384, bias=False)
+        )
+      )
+      (3): SwinBlockSequence(
+        (blocks): ModuleList(
+          (0): SwinBlock(
+            (norm1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=384, out_features=1152, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=384, out_features=384, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=384, out_features=1536, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=1536, out_features=384, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): SwinBlock(
+            (norm1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+            (attn): ShiftWindowMSA(
+              (w_msa): WindowMSA(
+                (qkv): Linear(in_features=384, out_features=1152, bias=True)
+                (attn_drop): Dropout(p=0.0, inplace=False)
+                (proj): Linear(in_features=384, out_features=384, bias=True)
+                (proj_drop): Dropout(p=0.0, inplace=False)
+                (softmax): Softmax(dim=-1)
+              )
+              (drop): DropPath()
+            )
+            (norm2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+            (ffn): FFN(
+              (activate): GELU(approximate=none)
+              (layers): Sequential(
+                (0): Sequential(
+                  (0): Linear(in_features=384, out_features=1536, bias=True)
+                  (1): GELU(approximate=none)
+                  (2): Dropout(p=0.0, inplace=False)
+                )
+                (1): Linear(in_features=1536, out_features=384, bias=True)
+                (2): Dropout(p=0.0, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+      )
+    )
+    (norm0): LayerNorm((48,), eps=1e-05, elementwise_affine=True)
+    (norm1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+    (norm2): LayerNorm((192,), eps=1e-05, elementwise_affine=True)
+    (norm3): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+  )
+  init_cfg={'type': 'Pretrained', 'checkpoint': '/home/data1/yxd/mmsegmentation/simmim/new.pth'}
+  (decode_head): UPerHead(
+    input_transform=multiple_select, ignore_index=255, align_corners=False
+    (loss_decode): DiceLoss()
+    (conv_seg): Conv2d(512, 2, kernel_size=(1, 1), stride=(1, 1))
+    (dropout): Dropout2d(p=0.1, inplace=False)
+    (psp_modules): PPM(
+      (0): Sequential(
+        (0): AdaptiveAvgPool2d(output_size=1)
+        (1): ConvModule(
+          (conv): Conv2d(384, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (activate): ReLU(inplace=True)
+        )
+      )
+      (1): Sequential(
+        (0): AdaptiveAvgPool2d(output_size=2)
+        (1): ConvModule(
+          (conv): Conv2d(384, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (activate): ReLU(inplace=True)
+        )
+      )
+      (2): Sequential(
+        (0): AdaptiveAvgPool2d(output_size=3)
+        (1): ConvModule(
+          (conv): Conv2d(384, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (activate): ReLU(inplace=True)
+        )
+      )
+      (3): Sequential(
+        (0): AdaptiveAvgPool2d(output_size=6)
+        (1): ConvModule(
+          (conv): Conv2d(384, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (activate): ReLU(inplace=True)
+        )
+      )
+    )
+    (bottleneck): ConvModule(
+      (conv): Conv2d(2432, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (activate): ReLU(inplace=True)
+    )
+    (lateral_convs): ModuleList(
+      (0): ConvModule(
+        (conv): Conv2d(48, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU()
+      )
+      (1): ConvModule(
+        (conv): Conv2d(96, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU()
+      )
+      (2): ConvModule(
+        (conv): Conv2d(192, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU()
+      )
+    )
+    (fpn_convs): ModuleList(
+      (0): ConvModule(
+        (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU()
+      )
+      (1): ConvModule(
+        (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU()
+      )
+      (2): ConvModule(
+        (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU()
+      )
+    )
+    (fpn_bottleneck): ConvModule(
+      (conv): Conv2d(2048, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn): SyncBatchNorm(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (activate): ReLU(inplace=True)
+    )
+  )
+  init_cfg={'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+  (auxiliary_head): FCNHead(
+    input_transform=None, ignore_index=255, align_corners=False
+    (loss_decode): DiceLoss()
+    (conv_seg): Conv2d(256, 2, kernel_size=(1, 1), stride=(1, 1))
+    (dropout): Dropout2d(p=0.1, inplace=False)
+    (convs): Sequential(
+      (0): ConvModule(
+        (conv): Conv2d(192, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (bn): SyncBatchNorm(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (activate): ReLU(inplace=True)
+      )
+    )
+  )
+  init_cfg={'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+)
+2022-11-14 15:01:04,767 - mmseg - INFO - Loaded 2616 images
+2022-11-14 15:01:05,565 - mmseg - INFO - Loaded 654 images
+2022-11-14 15:01:05,566 - mmseg - INFO - Start running, host: yxd@amax, work_dir: /home/data1/yxd/mmsegmentation/work_dirs/pupil
+2022-11-14 15:01:05,566 - mmseg - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+2022-11-14 15:01:05,567 - mmseg - INFO - workflow: [('train', 1)], max: 2160 iters
+2022-11-14 15:01:05,567 - mmseg - INFO - Checkpoints will be saved to /home/data1/yxd/mmsegmentation/work_dirs/pupil by HardDiskBackend.
+2022-11-14 15:05:08,433 - mmseg - INFO - Iter [50/2160]	lr: 1.916e-06, eta: 2:42:51, time: 4.631, data_time: 3.965, memory: 9152, decode.loss_dice: 0.4948, decode.acc_seg: 69.5369, aux.loss_dice: 0.2050, aux.acc_seg: 51.6868, loss: 0.6998
+2022-11-14 15:08:54,272 - mmseg - INFO - Iter [100/2160]	lr: 3.779e-06, eta: 2:37:02, time: 4.517, data_time: 4.013, memory: 9152, decode.loss_dice: 0.4717, decode.acc_seg: 76.4853, aux.loss_dice: 0.2035, aux.acc_seg: 59.0919, loss: 0.6752
+2022-11-14 15:12:40,544 - mmseg - INFO - Iter [150/2160]	lr: 5.549e-06, eta: 2:32:41, time: 4.525, data_time: 3.991, memory: 9152, decode.loss_dice: 0.4414, decode.acc_seg: 81.8874, aux.loss_dice: 0.2004, aux.acc_seg: 65.2121, loss: 0.6418
+2022-11-14 15:16:26,868 - mmseg - INFO - Saving checkpoint at 200 iterations
+2022-11-14 15:16:28,129 - mmseg - INFO - Iter [200/2160]	lr: 7.227e-06, eta: 2:28:50, time: 4.552, data_time: 3.968, memory: 9152, decode.loss_dice: 0.4034, decode.acc_seg: 88.1584, aux.loss_dice: 0.1948, aux.acc_seg: 75.4033, loss: 0.5982
+2022-11-14 15:20:15,258 - mmseg - INFO - Iter [250/2160]	lr: 8.812e-06, eta: 2:24:57, time: 4.542, data_time: 4.025, memory: 9152, decode.loss_dice: 0.3729, decode.acc_seg: 92.6189, aux.loss_dice: 0.1851, aux.acc_seg: 85.9082, loss: 0.5580
+2022-11-14 15:24:02,586 - mmseg - INFO - Iter [300/2160]	lr: 1.030e-05, eta: 2:21:07, time: 4.547, data_time: 4.015, memory: 9152, decode.loss_dice: 0.3567, decode.acc_seg: 94.1405, aux.loss_dice: 0.1756, aux.acc_seg: 90.0565, loss: 0.5323
+2022-11-14 15:27:49,756 - mmseg - INFO - Iter [350/2160]	lr: 1.170e-05, eta: 2:17:17, time: 4.543, data_time: 4.014, memory: 9152, decode.loss_dice: 0.3466, decode.acc_seg: 94.8257, aux.loss_dice: 0.1688, aux.acc_seg: 91.5775, loss: 0.5155
+2022-11-14 15:31:36,134 - mmseg - INFO - Saving checkpoint at 400 iterations
+2022-11-14 15:31:37,408 - mmseg - INFO - Iter [400/2160]	lr: 1.301e-05, eta: 2:13:30, time: 4.553, data_time: 3.992, memory: 9152, decode.loss_dice: 0.3374, decode.acc_seg: 95.1607, aux.loss_dice: 0.1632, aux.acc_seg: 92.3990, loss: 0.5006
+2022-11-14 15:35:24,193 - mmseg - INFO - Iter [450/2160]	lr: 1.423e-05, eta: 2:09:39, time: 4.536, data_time: 4.009, memory: 9152, decode.loss_dice: 0.3290, decode.acc_seg: 95.4438, aux.loss_dice: 0.1595, aux.acc_seg: 92.9360, loss: 0.4885
+2022-11-14 15:39:11,195 - mmseg - INFO - Iter [500/2160]	lr: 1.535e-05, eta: 2:05:50, time: 4.540, data_time: 4.051, memory: 9152, decode.loss_dice: 0.2724, decode.acc_seg: 94.6449, aux.loss_dice: 0.1566, aux.acc_seg: 93.0506, loss: 0.4291
+2022-11-14 15:42:57,646 - mmseg - INFO - Iter [550/2160]	lr: 1.638e-05, eta: 2:02:00, time: 4.529, data_time: 3.994, memory: 9152, decode.loss_dice: 0.2120, decode.acc_seg: 95.1742, aux.loss_dice: 0.1534, aux.acc_seg: 93.2751, loss: 0.3654
+2022-11-14 15:46:42,782 - mmseg - INFO - Saving checkpoint at 600 iterations
+2022-11-14 15:46:44,013 - mmseg - INFO - Iter [600/2160]	lr: 1.732e-05, eta: 1:58:10, time: 4.528, data_time: 3.980, memory: 9152, decode.loss_dice: 0.1693, decode.acc_seg: 95.4609, aux.loss_dice: 0.1513, aux.acc_seg: 93.5540, loss: 0.3206
+2022-11-14 15:50:29,066 - mmseg - INFO - Iter [650/2160]	lr: 1.816e-05, eta: 1:54:18, time: 4.501, data_time: 3.978, memory: 9152, decode.loss_dice: 0.1416, decode.acc_seg: 95.8775, aux.loss_dice: 0.1489, aux.acc_seg: 93.8899, loss: 0.2905
+2022-11-14 15:54:15,227 - mmseg - INFO - Iter [700/2160]	lr: 1.891e-05, eta: 1:50:29, time: 4.523, data_time: 3.987, memory: 9152, decode.loss_dice: 0.1267, decode.acc_seg: 96.0740, aux.loss_dice: 0.1470, aux.acc_seg: 93.9748, loss: 0.2737
+2022-11-14 15:54:38,838 - mmseg - INFO - per class results:
+2022-11-14 15:54:38,839 - mmseg - INFO - 
++------------+-------+-------+
+|   Class    |  IoU  |  Acc  |
++------------+-------+-------+
+| background | 96.29 | 96.48 |
+|   vessel   |  37.9 | 91.66 |
++------------+-------+-------+
+2022-11-14 15:54:38,839 - mmseg - INFO - Summary:
+2022-11-14 15:54:38,839 - mmseg - INFO - 
++-------+-------+-------+
+|  aAcc |  mIoU |  mAcc |
++-------+-------+-------+
+| 96.37 | 67.09 | 94.07 |
++-------+-------+-------+
+2022-11-14 15:54:38,839 - mmseg - INFO - Iter(val) [82]	aAcc: 0.9637, mIoU: 0.6709, mAcc: 0.9407, IoU.background: 0.9629, IoU.vessel: 0.3790, Acc.background: 0.9648, Acc.vessel: 0.9166
+2022-11-14 15:58:24,389 - mmseg - INFO - Iter [750/2160]	lr: 1.957e-05, eta: 1:47:23, time: 4.983, data_time: 4.468, memory: 9174, decode.loss_dice: 0.1150, decode.acc_seg: 96.3110, aux.loss_dice: 0.1453, aux.acc_seg: 94.1333, loss: 0.2603
+2022-11-14 16:02:11,188 - mmseg - INFO - Saving checkpoint at 800 iterations
+2022-11-14 16:02:12,246 - mmseg - INFO - Iter [800/2160]	lr: 2.014e-05, eta: 1:43:34, time: 4.557, data_time: 3.995, memory: 9174, decode.loss_dice: 0.1076, decode.acc_seg: 96.4618, aux.loss_dice: 0.1444, aux.acc_seg: 94.2670, loss: 0.2519
+2022-11-14 16:06:00,252 - mmseg - INFO - Iter [850/2160]	lr: 2.061e-05, eta: 1:39:44, time: 4.560, data_time: 4.121, memory: 9174, decode.loss_dice: 0.0989, decode.acc_seg: 96.6693, aux.loss_dice: 0.1429, aux.acc_seg: 94.3486, loss: 0.2418
+2022-11-14 16:09:48,824 - mmseg - INFO - Iter [900/2160]	lr: 2.099e-05, eta: 1:35:56, time: 4.571, data_time: 4.094, memory: 9174, decode.loss_dice: 0.0931, decode.acc_seg: 96.8759, aux.loss_dice: 0.1419, aux.acc_seg: 94.4533, loss: 0.2350
+2022-11-14 16:13:37,866 - mmseg - INFO - Iter [950/2160]	lr: 2.128e-05, eta: 1:32:09, time: 4.581, data_time: 4.057, memory: 9174, decode.loss_dice: 0.0887, decode.acc_seg: 96.9252, aux.loss_dice: 0.1403, aux.acc_seg: 94.5589, loss: 0.2290
+2022-11-14 16:17:26,783 - mmseg - INFO - Saving checkpoint at 1000 iterations
+2022-11-14 16:17:27,849 - mmseg - INFO - Exp name: pupil.py
+2022-11-14 16:17:27,849 - mmseg - INFO - Iter [1000/2160]	lr: 2.148e-05, eta: 1:28:22, time: 4.600, data_time: 4.100, memory: 9174, decode.loss_dice: 0.0856, decode.acc_seg: 96.9943, aux.loss_dice: 0.1395, aux.acc_seg: 94.5795, loss: 0.2251
+2022-11-14 16:21:15,532 - mmseg - INFO - Iter [1050/2160]	lr: 2.158e-05, eta: 1:24:32, time: 4.554, data_time: 4.091, memory: 9174, decode.loss_dice: 0.0829, decode.acc_seg: 97.0708, aux.loss_dice: 0.1378, aux.acc_seg: 94.4916, loss: 0.2206
+2022-11-14 16:25:04,290 - mmseg - INFO - Iter [1100/2160]	lr: 2.159e-05, eta: 1:20:44, time: 4.575, data_time: 4.059, memory: 9174, decode.loss_dice: 0.0800, decode.acc_seg: 97.1329, aux.loss_dice: 0.1298, aux.acc_seg: 94.0710, loss: 0.2097
+2022-11-14 16:28:52,935 - mmseg - INFO - Iter [1150/2160]	lr: 2.151e-05, eta: 1:16:56, time: 4.573, data_time: 4.027, memory: 9174, decode.loss_dice: 0.0783, decode.acc_seg: 97.1968, aux.loss_dice: 0.1047, aux.acc_seg: 93.4365, loss: 0.1830
+2022-11-14 16:32:39,867 - mmseg - INFO - Saving checkpoint at 1200 iterations
+2022-11-14 16:32:40,951 - mmseg - INFO - Iter [1200/2160]	lr: 2.134e-05, eta: 1:13:07, time: 4.560, data_time: 4.008, memory: 9174, decode.loss_dice: 0.0754, decode.acc_seg: 97.2595, aux.loss_dice: 0.0867, aux.acc_seg: 93.8303, loss: 0.1622
+2022-11-14 16:36:26,909 - mmseg - INFO - Iter [1250/2160]	lr: 2.107e-05, eta: 1:09:16, time: 4.519, data_time: 4.004, memory: 9174, decode.loss_dice: 0.0723, decode.acc_seg: 97.3916, aux.loss_dice: 0.0728, aux.acc_seg: 94.4211, loss: 0.1451
+2022-11-14 16:40:12,912 - mmseg - INFO - Iter [1300/2160]	lr: 2.071e-05, eta: 1:05:26, time: 4.520, data_time: 4.002, memory: 9174, decode.loss_dice: 0.0717, decode.acc_seg: 97.3437, aux.loss_dice: 0.0639, aux.acc_seg: 94.6028, loss: 0.1356
+2022-11-14 16:43:59,903 - mmseg - INFO - Iter [1350/2160]	lr: 2.026e-05, eta: 1:01:37, time: 4.540, data_time: 4.011, memory: 9174, decode.loss_dice: 0.0681, decode.acc_seg: 97.4990, aux.loss_dice: 0.0580, aux.acc_seg: 94.9482, loss: 0.1261
+2022-11-14 16:47:46,949 - mmseg - INFO - Saving checkpoint at 1400 iterations
+2022-11-14 16:47:48,030 - mmseg - INFO - Iter [1400/2160]	lr: 1.972e-05, eta: 0:57:49, time: 4.563, data_time: 4.019, memory: 9174, decode.loss_dice: 0.0682, decode.acc_seg: 97.4574, aux.loss_dice: 0.0549, aux.acc_seg: 95.0128, loss: 0.1231
+2022-11-14 16:48:06,110 - mmseg - INFO - per class results:
+2022-11-14 16:48:06,111 - mmseg - INFO - 
++------------+-------+-------+
+|   Class    |  IoU  |  Acc  |
++------------+-------+-------+
+| background | 98.15 | 98.65 |
+|   vessel   | 51.55 | 79.68 |
++------------+-------+-------+
+2022-11-14 16:48:06,111 - mmseg - INFO - Summary:
+2022-11-14 16:48:06,111 - mmseg - INFO - 
++-------+-------+-------+
+|  aAcc |  mIoU |  mAcc |
++-------+-------+-------+
+| 98.19 | 74.85 | 89.16 |
++-------+-------+-------+
+2022-11-14 16:48:06,112 - mmseg - INFO - Iter(val) [82]	aAcc: 0.9819, mIoU: 0.7485, mAcc: 0.8916, IoU.background: 0.9815, IoU.vessel: 0.5155, Acc.background: 0.9865, Acc.vessel: 0.7968
+2022-11-14 16:51:52,180 - mmseg - INFO - Iter [1450/2160]	lr: 1.908e-05, eta: 0:54:09, time: 4.883, data_time: 4.363, memory: 9174, decode.loss_dice: 0.0669, decode.acc_seg: 97.5335, aux.loss_dice: 0.0529, aux.acc_seg: 95.1586, loss: 0.1197
+2022-11-14 16:55:38,773 - mmseg - INFO - Iter [1500/2160]	lr: 1.835e-05, eta: 0:50:19, time: 4.532, data_time: 4.014, memory: 9174, decode.loss_dice: 0.0652, decode.acc_seg: 97.5836, aux.loss_dice: 0.0505, aux.acc_seg: 95.2938, loss: 0.1157
+2022-11-14 16:59:25,568 - mmseg - INFO - Iter [1550/2160]	lr: 1.697e-05, eta: 0:46:29, time: 4.536, data_time: 4.009, memory: 9174, decode.loss_dice: 0.0641, decode.acc_seg: 97.6049, aux.loss_dice: 0.0488, aux.acc_seg: 95.3862, loss: 0.1128
+2022-11-14 17:03:12,859 - mmseg - INFO - Saving checkpoint at 1600 iterations
+2022-11-14 17:03:13,944 - mmseg - INFO - Iter [1600/2160]	lr: 1.558e-05, eta: 0:42:40, time: 4.568, data_time: 4.021, memory: 9174, decode.loss_dice: 0.0629, decode.acc_seg: 97.6474, aux.loss_dice: 0.0476, aux.acc_seg: 95.3982, loss: 0.1105
+2022-11-14 17:07:00,564 - mmseg - INFO - Iter [1650/2160]	lr: 1.419e-05, eta: 0:38:51, time: 4.532, data_time: 4.002, memory: 9174, decode.loss_dice: 0.0616, decode.acc_seg: 97.6608, aux.loss_dice: 0.0467, aux.acc_seg: 95.4209, loss: 0.1084
+2022-11-14 17:10:47,187 - mmseg - INFO - Iter [1700/2160]	lr: 1.281e-05, eta: 0:35:02, time: 4.532, data_time: 4.008, memory: 9174, decode.loss_dice: 0.0619, decode.acc_seg: 97.6645, aux.loss_dice: 0.0463, aux.acc_seg: 95.4598, loss: 0.1081
+2022-11-14 17:14:33,287 - mmseg - INFO - Iter [1750/2160]	lr: 1.142e-05, eta: 0:31:13, time: 4.522, data_time: 3.978, memory: 9174, decode.loss_dice: 0.0611, decode.acc_seg: 97.7043, aux.loss_dice: 0.0457, aux.acc_seg: 95.4977, loss: 0.1069
+2022-11-14 17:18:20,538 - mmseg - INFO - Saving checkpoint at 1800 iterations
+2022-11-14 17:18:21,678 - mmseg - INFO - Iter [1800/2160]	lr: 1.003e-05, eta: 0:27:24, time: 4.568, data_time: 4.020, memory: 9174, decode.loss_dice: 0.0592, decode.acc_seg: 97.7718, aux.loss_dice: 0.0446, aux.acc_seg: 95.5823, loss: 0.1038
+2022-11-14 17:22:08,265 - mmseg - INFO - Iter [1850/2160]	lr: 8.639e-06, eta: 0:23:36, time: 4.532, data_time: 3.976, memory: 9174, decode.loss_dice: 0.0594, decode.acc_seg: 97.7606, aux.loss_dice: 0.0444, aux.acc_seg: 95.6316, loss: 0.1038
+2022-11-14 17:25:55,889 - mmseg - INFO - Iter [1900/2160]	lr: 7.250e-06, eta: 0:19:47, time: 4.552, data_time: 4.019, memory: 9174, decode.loss_dice: 0.0585, decode.acc_seg: 97.7687, aux.loss_dice: 0.0440, aux.acc_seg: 95.6339, loss: 0.1025
+2022-11-14 17:29:43,462 - mmseg - INFO - Iter [1950/2160]	lr: 5.861e-06, eta: 0:15:59, time: 4.552, data_time: 3.993, memory: 9174, decode.loss_dice: 0.0580, decode.acc_seg: 97.8106, aux.loss_dice: 0.0438, aux.acc_seg: 95.6623, loss: 0.1019
+2022-11-14 17:33:30,268 - mmseg - INFO - Saving checkpoint at 2000 iterations
+2022-11-14 17:33:31,350 - mmseg - INFO - Exp name: pupil.py
+2022-11-14 17:33:31,350 - mmseg - INFO - Iter [2000/2160]	lr: 4.472e-06, eta: 0:12:10, time: 4.558, data_time: 4.000, memory: 9174, decode.loss_dice: 0.0570, decode.acc_seg: 97.8612, aux.loss_dice: 0.0434, aux.acc_seg: 95.7235, loss: 0.1003
+2022-11-14 17:37:17,247 - mmseg - INFO - Iter [2050/2160]	lr: 3.083e-06, eta: 0:08:22, time: 4.518, data_time: 3.999, memory: 9174, decode.loss_dice: 0.0579, decode.acc_seg: 97.8356, aux.loss_dice: 0.0436, aux.acc_seg: 95.7007, loss: 0.1015
+2022-11-14 17:41:05,215 - mmseg - INFO - Iter [2100/2160]	lr: 1.694e-06, eta: 0:04:33, time: 4.559, data_time: 3.984, memory: 9174, decode.loss_dice: 0.0568, decode.acc_seg: 97.8400, aux.loss_dice: 0.0432, aux.acc_seg: 95.6977, loss: 0.0999
+2022-11-14 17:41:23,061 - mmseg - INFO - per class results:
+2022-11-14 17:41:23,062 - mmseg - INFO - 
++------------+-------+-------+
+|   Class    |  IoU  |  Acc  |
++------------+-------+-------+
+| background | 97.53 | 97.87 |
+|   vessel   |  46.2 | 85.88 |
++------------+-------+-------+
+2022-11-14 17:41:23,062 - mmseg - INFO - Summary:
+2022-11-14 17:41:23,063 - mmseg - INFO - 
++-------+-------+-------+
+|  aAcc |  mIoU |  mAcc |
++-------+-------+-------+
+| 97.58 | 71.87 | 91.87 |
++-------+-------+-------+
+2022-11-14 17:41:23,063 - mmseg - INFO - Iter(val) [82]	aAcc: 0.9758, mIoU: 0.7187, mAcc: 0.9187, IoU.background: 0.9753, IoU.vessel: 0.4620, Acc.background: 0.9787, Acc.vessel: 0.8588
+2022-11-14 17:45:09,587 - mmseg - INFO - Iter [2150/2160]	lr: 3.056e-07, eta: 0:00:45, time: 4.888, data_time: 4.372, memory: 9174, decode.loss_dice: 0.0563, decode.acc_seg: 97.8994, aux.loss_dice: 0.0428, aux.acc_seg: 95.7661, loss: 0.0991
+2022-11-14 17:45:55,126 - mmseg - INFO - Saving checkpoint at 2160 iterations
